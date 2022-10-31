@@ -89,4 +89,7 @@ public enum WebViewChannelDelegateMethods: String {
     case getMicrophoneCaptureState = "getMicrophoneCaptureState"
     case setMicrophoneCaptureState = "setMicrophoneCaptureState"
     case loadSimulatedRequest = "loadSimulatedRequest"
+    case getCookies = "getCookies"
+    case setCookies = "setCookies"
+    case deleteCookies = "deleteCookies"
 }
