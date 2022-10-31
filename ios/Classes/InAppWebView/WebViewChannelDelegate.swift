@@ -162,7 +162,7 @@ public class WebViewChannelDelegate : ChannelDelegate {
             let inAppWebViewOptions = InAppWebViewOptions()
             let inAppWebViewOptionsMap = arguments!["options"] as! [String: Any]
             let _ = inAppWebViewOptions.parse(options: inAppWebViewOptionsMap)
-            webView?.setOptions(newOptions: inAppWebViewOptions, newOptionsMap: inAppWebViewOptionsMap, result: result)
+            webView?.setSettings(newOptions: inAppWebViewOptions, newOptionsMap: inAppWebViewOptionsMap, result: result)
             break
         case .getSettings:
             if let iabController = webView?.inAppBrowserDelegate as? InAppBrowserWebViewController {
@@ -650,7 +650,10 @@ public class WebViewChannelDelegate : ChannelDelegate {
             break
         case "getCookies":
          if let webView = webView, #available(iOS 15.0, *) {
+                            let url = (arguments!["url"] as? String)!
+
                   webView.getCookies(
+                    url:url,
                     result:result
                 )
             } else {
@@ -664,7 +667,8 @@ public class WebViewChannelDelegate : ChannelDelegate {
                 let cookieDomain = (arguments!["domain"] as? String)!
                 let cookiePath = (arguments!["path"] as? String)!
                 webView.setCookie(
-                    name:cookieName,value:cookieValue, domain:cookieDomain, path: cookiePath
+                    name:cookieName,value:cookieValue, domain:cookieDomain, path: cookiePath,
+                    result:result
                 )
                 result(true)
             } else {
