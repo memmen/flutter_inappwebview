@@ -648,7 +648,7 @@ public class WebViewChannelDelegate : ChannelDelegate {
                 result(false)
             }
             break
-        case "getCookies":
+        case .getCookies:
          if let webView = webView, #available(iOS 15.0, *) {
                             let url = (arguments!["url"] as? String)!
 
@@ -660,7 +660,7 @@ public class WebViewChannelDelegate : ChannelDelegate {
                 result(nil)
             }  
              break
-        case "setCookie":
+        case .setCookie:
             if let webView = webView, #available(iOS 15.0, *) {
                 let cookieName = (arguments!["name"] as? String)!
                 let cookieValue = (arguments!["value"] as? String)!
@@ -675,7 +675,7 @@ public class WebViewChannelDelegate : ChannelDelegate {
                 result(nil)
             }
             break
-         case "deleteAllCookies":
+         case .deleteAllCookies:
             if let webView = webView, #available(iOS 15.0, *) {
                 let cookieDomain = (arguments!["domain"] as? String)!
             webView.deleteAllCookies(
