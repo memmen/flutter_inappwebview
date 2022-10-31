@@ -676,7 +676,7 @@ public class WebViewChannelDelegate : ChannelDelegate {
                 let cookieDomain = (arguments!["domain"] as? String)!
             webView.deleteAllCookies(
                     domain:cookieDomain, result: result
-            )	                )
+            )
 
             result(true)
         } else {
