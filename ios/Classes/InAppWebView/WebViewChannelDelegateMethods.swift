@@ -8,6 +8,9 @@
 import Foundation
 
 public enum WebViewChannelDelegateMethods: String {
+    case getCookies = "getCookies"
+    case setCookies = "setCookies"
+    case deleteCookies = "deleteCookies"
     case getUrl = "getUrl"
     case getTitle = "getTitle"
     case getProgress = "getProgress"
@@ -89,7 +92,4 @@ public enum WebViewChannelDelegateMethods: String {
     case getMicrophoneCaptureState = "getMicrophoneCaptureState"
     case setMicrophoneCaptureState = "setMicrophoneCaptureState"
     case loadSimulatedRequest = "loadSimulatedRequest"
-    case getCookies = "getCookies"
-    case setCookies = "setCookies"
-    case deleteCookies = "deleteCookies"
 }
