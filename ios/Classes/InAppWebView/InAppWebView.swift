@@ -217,9 +217,9 @@ public class InAppWebView: WKWebView, UIScrollViewDelegate, WKUIDelegate,
            .secure: "TRUE",
           .expires: NSDate(timeIntervalSinceNow: 31556926)
           ])! 
-configuration.websiteDataStore.httpCookieStore.setCookie(cookie, completionHandler: {() in
-    result(true)
-        })
+            configuration.websiteDataStore.httpCookieStore.setCookie(cookie, completionHandler: {() in
+                result(true)
+            })
         }
                  
     }

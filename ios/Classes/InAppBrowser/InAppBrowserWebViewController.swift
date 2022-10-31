@@ -442,8 +442,7 @@ public class InAppBrowserWebViewController: UIViewController, InAppBrowserDelega
     public func setSettings(newSettings: InAppBrowserSettings, newSettingsMap: [String: Any], result: @escaping FlutterResult) {
         let newInAppWebViewSettings = InAppWebViewSettings()
         let _ = newInAppWebViewSettings.parse(settings: newSettingsMap)
-        self.webView.setOptions(newOptions: newInAppWebViewOptions, newOptionsMap: newOptionsMap, result:result)
-        
+        webView?.setSettings(newSettings: newInAppWebViewSettings, newSettingsMap: newSettingsMap, result:result)        
         if newSettingsMap["hidden"] != nil, browserSettings?.hidden != newSettings.hidden {
             if newSettings.hidden {
                 hide()
