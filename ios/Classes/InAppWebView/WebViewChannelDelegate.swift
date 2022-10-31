@@ -159,10 +159,18 @@ public class WebViewChannelDelegate : ChannelDelegate {
             }
             break
         case .setSettings:
-            let inAppWebViewOptions = InAppWebViewOptions()
-            let inAppWebViewOptionsMap = arguments!["options"] as! [String: Any]
-            let _ = inAppWebViewOptions.parse(options: inAppWebViewOptionsMap)
-            webView?.setSettings(newOptions: inAppWebViewOptions, newOptionsMap: inAppWebViewOptionsMap, result: result)
+            if let iabController = webView?.inAppBrowserDelegate as? InAppBrowserWebViewController {
+                let inAppBrowserSettings = InAppBrowserSettings()
+                let inAppBrowserSettingsMap = arguments!["settings"] as! [String: Any]
+                let _ = inAppBrowserSettings.parse(settings: inAppBrowserSettingsMap)
+                iabController.setSettings(newSettings: inAppBrowserSettings, newSettingsMap: inAppBrowserSettingsMap)
+            } else {
+                let inAppWebViewSettings = InAppWebViewSettings()
+                let inAppWebViewSettingsMap = arguments!["settings"] as! [String: Any]
+                let _ = inAppWebViewSettings.parse(settings: inAppWebViewSettingsMap)
+                webView?.setSettings(newSettings: inAppWebViewSettings, newSettingsMap: inAppWebViewSettingsMap)
+            }
+            result(true)
             break
         case .getSettings:
             if let iabController = webView?.inAppBrowserDelegate as? InAppBrowserWebViewController {
