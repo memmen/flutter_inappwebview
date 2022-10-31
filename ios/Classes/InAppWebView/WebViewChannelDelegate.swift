@@ -170,7 +170,6 @@ public class WebViewChannelDelegate : ChannelDelegate {
                 let _ = inAppWebViewSettings.parse(settings: inAppWebViewSettingsMap)
                 webView?.setSettings(newSettings: inAppWebViewSettings, newSettingsMap: inAppWebViewSettingsMap)
             }
-            result(true)
             break
         case .getSettings:
             if let iabController = webView?.inAppBrowserDelegate as? InAppBrowserWebViewController {
