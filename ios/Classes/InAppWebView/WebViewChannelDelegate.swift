@@ -159,18 +159,10 @@ public class WebViewChannelDelegate : ChannelDelegate {
             }
             break
         case .setSettings:
-            if let iabController = webView?.inAppBrowserDelegate as? InAppBrowserWebViewController {
-                let inAppBrowserSettings = InAppBrowserSettings()
-                let inAppBrowserSettingsMap = arguments!["settings"] as! [String: Any]
-                let _ = inAppBrowserSettings.parse(settings: inAppBrowserSettingsMap)
-                iabController.setSettings(newSettings: inAppBrowserSettings, newSettingsMap: inAppBrowserSettingsMap)
-            } else {
-                let inAppWebViewSettings = InAppWebViewSettings()
-                let inAppWebViewSettingsMap = arguments!["settings"] as! [String: Any]
-                let _ = inAppWebViewSettings.parse(settings: inAppWebViewSettingsMap)
-                webView?.setSettings(newSettings: inAppWebViewSettings, newSettingsMap: inAppWebViewSettingsMap)
-            }
-            result(true)
+            let inAppWebViewOptions = InAppWebViewOptions()
+            let inAppWebViewOptionsMap = arguments!["options"] as! [String: Any]
+            let _ = inAppWebViewOptions.parse(options: inAppWebViewOptionsMap)
+            webView?.setOptions(newOptions: inAppWebViewOptions, newOptionsMap: inAppWebViewOptionsMap, result: result)
             break
         case .getSettings:
             if let iabController = webView?.inAppBrowserDelegate as? InAppBrowserWebViewController {
@@ -656,6 +648,40 @@ public class WebViewChannelDelegate : ChannelDelegate {
                 result(false)
             }
             break
+        case "getCookies":
+         if let webView = webView, #available(iOS 15.0, *) {
+                  webView.getCookies(
+                    result:result
+                )
+            } else {
+                result(nil)
+            }  
+             break
+        case "setCookie":
+            if let webView = webView, #available(iOS 15.0, *) {
+                let cookieName = (arguments!["name"] as? String)!
+                let cookieValue = (arguments!["value"] as? String)!
+                let cookieDomain = (arguments!["domain"] as? String)!
+                let cookiePath = (arguments!["path"] as? String)!
+                webView.setCookie(
+                    name:cookieName,value:cookieValue, domain:cookieDomain, path: cookiePath
+                )
+                result(true)
+            } else {
+                result(nil)
+            }
+            break
+         case "deleteAllCookies":
+            if let webView = webView, #available(iOS 15.0, *) {
+                let cookieDomain = (arguments!["domain"] as? String)!
+            webView.deleteAllCookies(
+                    domain:cookieDomain, result: result
+            )	                )
+
+            result(true)
+        } else {
+            result(nil)
+        }
         case .loadSimulatedRequest:
             if let webView = webView, #available(iOS 15.0, *) {
                 let request = URLRequest.init(fromPluginMap: arguments!["urlRequest"] as! [String:Any?])

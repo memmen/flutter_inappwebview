@@ -84,9 +84,8 @@ class Storage {
   ///- iOS
   ///- Web
   Future<void> setItem({required String key, required dynamic value}) async {
-    var encodedValue = json.encode(value);
-    await _controller.evaluateJavascript(source: """
-    window.$webStorageType.setItem("$key", ${value is String ? encodedValue : "JSON.stringify($encodedValue)"});
+   await _controller.evaluateJavascript(source: """
+    window.$webStorageType.setItem("$key", "$value");
     """);
   }
 

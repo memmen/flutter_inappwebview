@@ -73,6 +73,10 @@ public class HeadlessInAppWebView : Disposable {
         }
         return newFlutterWebView
     }
+
+    deinit {
+        dispose()
+    }
     
     public func dispose() {
         channelDelegate?.dispose()

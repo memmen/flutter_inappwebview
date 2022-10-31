@@ -206,6 +206,75 @@ public class InAppWebView: WKWebView, UIScrollViewDelegate, WKUIDelegate,
             }
         })
     }
+
+    public func setCookie(name: String, value: String, domain: String, path: String, result: @escaping FlutterResult) -> Void {
+                if #available(iOS 11.0, *) {
+        let cookie = HTTPCookie(properties: [
+          .domain: domain,
+          .path: path,
+           .name: name,
+           .value: value,
+           .secure: "TRUE",
+          .expires: NSDate(timeIntervalSinceNow: 31556926)
+          ])! 
+configuration.websiteDataStore.httpCookieStore.setCookie(cookie, completionHandler: {() in
+    result(true)	            result(true)
+        })
+        }
+                 
+    }
+
+public func deleteAllCookies(domain: String, result: @escaping FlutterResult) -> Void {
+        if #available(iOS 11.0, *) {
+            configuration.websiteDataStore = WKWebsiteDataStore.nonPersistent()
+            result(true)
+        }           
+    }
+
+   public func getCookies(url: String, result: @escaping FlutterResult) -> Void {
+                if #available(iOS 11.0, *) {
+        var cookieList: [[String: Any?]] = []
+        
+        if let urlHost = URL(string: url)?.host {
+            configuration.websiteDataStore.httpCookieStore.getAllCookies { (cookies) in
+                for cookie in cookies {
+                    if cookie.domain.contains(urlHost) {
+                        var sameSite: String? = nil
+                        if #available(iOS 13.0, *) {
+                            if let sameSiteValue = cookie.sameSitePolicy?.rawValue {
+                                sameSite = sameSiteValue.prefix(1).capitalized + sameSiteValue.dropFirst()
+                            }
+                        }
+                        
+                        var expiresDateTimestamp: Int64 = -1
+                        if let expiresDate = cookie.expiresDate?.timeIntervalSince1970 {
+                            // convert to milliseconds
+                            expiresDateTimestamp = Int64(expiresDate * 1000)
+                        }
+                        
+                        cookieList.append([
+                            "name": cookie.name,
+                            "value": cookie.value,
+                            "expiresDate": expiresDateTimestamp != -1 ? expiresDateTimestamp : nil,
+                            "isSessionOnly": cookie.isSessionOnly,
+                            "domain": cookie.domain,
+                            "sameSite": sameSite,
+                            "isSecure": cookie.isSecure,
+                            "isHttpOnly": cookie.isHTTPOnly,
+                            "path": cookie.path,
+                        ])
+                    }
+                }
+                result(cookieList)
+            }
+            return
+        } else {
+            print("Cannot get WebView cookies. No HOST found for URL: \(url)")
+        }
+        
+        result(cookieList)
+                }
+    }
     
     public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         lastTouchPoint = point
@@ -891,7 +960,7 @@ public class InAppWebView: WKWebView, UIScrollViewDelegate, WKUIDelegate,
         loadUrl(urlRequest: urlRequest, allowingReadAccessTo: nil)
     }
     
-    func setSettings(newSettings: InAppWebViewSettings, newSettingsMap: [String: Any]) {
+    func setSettings(newSettings: InAppWebViewSettings, newSettingsMap: [String: Any],result: @escaping FlutterResult) {
         
         // MUST be the first! In this way, all the settings that uses evaluateJavaScript can be applied/blocked!
         if #available(iOS 13.0, *) {
@@ -999,7 +1068,7 @@ public class InAppWebView: WKWebView, UIScrollViewDelegate, WKUIDelegate,
                                             enable: newSettings.useShouldInterceptAjaxRequest,
                                             pluginScript: INTERCEPT_AJAX_REQUEST_JS_PLUGIN_SCRIPT)
             } else {
-                newSettings.useShouldInterceptFetchRequest = false
+                newSettings.useShouldInterceptAjaxRequest = false
             }
         }
         
@@ -1224,6 +1293,11 @@ public class InAppWebView: WKWebView, UIScrollViewDelegate, WKUIDelegate,
         scrollView.isScrollEnabled = !(newSettings.disableVerticalScroll && newSettings.disableHorizontalScroll)
         
         self.settings = newSettings
+        if(!newOptions.useShouldInterceptAjaxRequest){
+            configuration.userContentController.removeAllUserScripts()
+            prepareAndAddUserScripts()
+        }
+        result(true)
     }
     
     func getSettings() -> [String: Any?]? {
