@@ -1293,7 +1293,7 @@ public func deleteAllCookies(domain: String, result: @escaping FlutterResult) ->
         scrollView.isScrollEnabled = !(newSettings.disableVerticalScroll && newSettings.disableHorizontalScroll)
         
         self.settings = newSettings
-        if(!newOptions.useShouldInterceptAjaxRequest){
+        if(!newSettings.useShouldInterceptAjaxRequest){
             configuration.userContentController.removeAllUserScripts()
             prepareAndAddUserScripts()
         }
